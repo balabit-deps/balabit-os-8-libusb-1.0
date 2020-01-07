@@ -1,0 +1,34 @@
+From 1e9d26a753a741bfdb0769b4c895697d16edcc27 Mon Sep 17 00:00:00 2001
+From: Pino Toscano <toscano.pino@tiscali.it>
+Date: Fri, 27 Dec 2019 18:50:27 +0100
+Subject: [PATCH] core: include sys/time.h on any GNU libc OS
+
+GNU libc provides sys/time.h, so unconditionally include it when using
+that libc.
+
+Since sys/time.h is already included on a number of OSes, include it to
+minimize the differences between OSes when using libusb. Arguably,
+sources using functions from sys/time.h (such as gettimeofday) ought to
+already include it on their own; OTOH, let's avoid making such issues
+OS-specific.
+---
+ libusb/libusb.h       | 2 +-
+ libusb/version_nano.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libusb/libusb.h b/libusb/libusb.h
+index 8a6b0bf..d2535d0 100644
+--- a/libusb/libusb.h
++++ b/libusb/libusb.h
+@@ -54,7 +54,7 @@ typedef unsigned __int32  uint32_t;
+ #include <sys/types.h>
+ #endif
+ 
+-#if defined(__linux__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(__HAIKU__)
++#if defined(__linux__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(__HAIKU__) || defined(__GLIBC__)
+ #include <sys/time.h>
+ #endif
+ 
+-- 
+2.24.1
+
